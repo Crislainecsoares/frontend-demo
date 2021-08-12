@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Livro } from '../livro.model';
 import { LivroService } from '../livro.service';
 
 @Component({
-  selector: 'app-livro-update',
-  templateUrl: './livro-update.component.html',
-  styleUrls: ['./livro-update.component.css']
+  selector: 'app-livro-delete',
+  templateUrl: './livro-delete.component.html',
+  styleUrls: ['./livro-delete.component.css']
 })
-export class LivroUpdateComponent implements OnInit {
+export class LivroDeleteComponent implements OnInit {
 
   id_categoria: String = ''
   livro: Livro = {
@@ -18,10 +17,6 @@ export class LivroUpdateComponent implements OnInit {
     nome_autor: '',
     texto: ''
   }
-
-  titulo = new FormControl('', [Validators.minLength(3)])
-  nome_autor = new FormControl('', [Validators.minLength(3)])
-  texto = new FormControl('', [Validators.minLength(10)])
 
   constructor(private service: LivroService, private route: ActivatedRoute, private router: Router) { }
 
@@ -41,30 +36,16 @@ export class LivroUpdateComponent implements OnInit {
     })
   }
 
-  update(): void {
-    this.service.update(this.livro).subscribe((resposta) => {
+  delete():void {
+    this.service.delete(this.livro.id!).subscribe(() => {
       this.router.navigate([`categorias/${this.id_categoria}/livros`]);
-      this.service.mensagem('Livro atualizado com sucesso!')      
+      this.service.mensagem('Livro deletado com sucesso!')
+      
     }, err => {
       this.router.navigate([`categorias/${this.id_categoria}/livros`]);
-      this.service.mensagem('Falha ao atualizar livro!')   
+      this.service.mensagem('Falha ao deletar livro!')
+
     })
   }
 
-  getMessage() {
-    if(this.titulo.invalid) {
-      return 'O campo título deve conter entre 3 e 100 caracteres';
-    }
-    if(this.nome_autor.invalid) {
-      return 'O campo nome do autor deve conter entre 3 e 100 caracteres';
-    }
-    if(this.texto.invalid) {
-      return 'O campo texto deve conter entre 10 e 500 caracteres';
-    }
-    return false;   
-  }
-
-
-
 }
-
